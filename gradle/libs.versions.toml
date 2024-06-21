@@ -1,4 +1,5 @@
 [versions]
+
 agp = "8.5.0"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -6,14 +7,22 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+loggingInterceptor = "4.9.0"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
-
-# Librerias personalizadas
+# Dependencias personalizadas
+#lottie
 lottie = "5.2.0"
+#livedata
+retrofit = "2.9.0"
+runtimeLivedata = "1.6.8"
+lifecycleLivedataKtx = "2.8.2"
+#hilt
+hiltAndroidCompiler = "2.50"
 
 [libraries]
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -22,11 +31,20 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-
-# Librerias personalizadas
+# Dependencias personalizadas
+#lottie
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+# livedata
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
+# hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidCompiler" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+# retrofit
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
