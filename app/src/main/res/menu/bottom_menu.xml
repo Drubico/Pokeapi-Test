@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_filters"
+        android:id="@+id/pokemonListFragment"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/todos_los_pokemon" />
+    <item
+        android:id="@+id/pokemonFilterFragment"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="@string/filtros" />
     <item
-        android:id="@+id/action_all_pokemon"
-        android:icon="@android:drawable/ic_menu_view"
-        android:title="@string/todos_los_pok_mon" />
-    <item
-        android:id="@+id/action_search"
+        android:id="@+id/pokemonSearchFragment"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/busqueda" />
 </menu>

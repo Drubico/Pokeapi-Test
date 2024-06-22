@@ -1,55 +1,42 @@
 package com.drubico.pokeapi
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import com.drubico.pokeapi.ui.pokemonFilter.PokemonFilterFragment
-import com.drubico.pokeapi.ui.pokemonList.PokemonListFragment
-import com.drubico.pokeapi.ui.pokemonSearch.PokemonSearchFragment
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * MainActivity
- * Author: Diego Rubi
- **/
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_filters -> {
-                    replaceFragment(PokemonFilterFragment())
-                    true
-                }
-                R.id.action_all_pokemon -> {
-                    replaceFragment(PokemonListFragment())
-                    true
-                }
-                R.id.action_search -> {
-                    replaceFragment(PokemonSearchFragment())
-                    true
-                }
-                else -> false
-            }
-        }
+        // Configurar la toolbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        if (savedInstanceState == null) {
-            bottomNavigationView.selectedItemId = R.id.action_all_pokemon
-        }
+        // Obtener el NavHostFragment y el NavController
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment 
+        navController = navHostFragment.navController
+
+        // Configurar la ActionBar con NavController
+        setupActionBarWithNavController(navController)
+
+        // Configurar el BottomNavigationView con NavController
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.setupWithNavController(navController)
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

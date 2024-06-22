@@ -18,6 +18,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PokemonListFragment : Fragment() {
+
+    companion object {
+        fun newInstance() = PokemonListFragment()
+    }
+
     private val viewModel: PokemonListViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PokemonAdapter

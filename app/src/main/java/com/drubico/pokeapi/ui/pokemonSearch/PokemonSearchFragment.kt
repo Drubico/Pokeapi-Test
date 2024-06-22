@@ -2,6 +2,7 @@ package com.drubico.pokeapi.ui.pokemonSearch
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,16 +19,17 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PokemonSearchFragment : Fragment() {
+
+    companion object {
+        fun newInstance() = PokemonSearchFragment()
+    }
+
     private val viewModel: PokemonSearchViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: PokemonAdapter
-    private lateinit var loadingDialog : LoadingAlertDialog
+    private lateinit var adapter: PokemonSearchAdapter
+    private lateinit var loadingDialog: LoadingAlertDialog
     private lateinit var searchView: SearchView
     private lateinit var searchContainer: View
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +45,21 @@ class PokemonSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("PokemonSearchFragment", "ViewModel inyectado: $viewModel")
 
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-        adapter = PokemonAdapter(mutableListOf())
+        adapter = PokemonSearchAdapter(mutableListOf())
         recyclerView.adapter = adapter
-
 
         viewModel.pokemons.observe(viewLifecycleOwner) { pokemons ->
             adapter.updatePokemonList(pokemons)
+        }
+
+        viewModel.searchQuery.observe(viewLifecycleOwner) { query ->
+            adapter.filter.filter(query)
+            if (query.isNotEmpty()) {
+                searchView.setQuery(query, false)
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -67,7 +76,7 @@ class PokemonSearchFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
+                viewModel.setSearchQuery(newText ?: "")
                 return true
             }
         })
@@ -81,5 +90,4 @@ class PokemonSearchFragment : Fragment() {
         searchEditText.setTextColor(colorPrimary)
         searchEditText.setHintTextColor(colorPrimary)
     }
-
 }
