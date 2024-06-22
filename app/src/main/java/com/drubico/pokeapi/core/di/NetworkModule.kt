@@ -1,6 +1,7 @@
 package com.drubico.pokeapi.core.di
 
 import com.drubico.pokeapi.BuildConfig
+import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +31,12 @@ class NetworkModule {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePokemonList(retrofit: Retrofit): GetPokemonListClient {
+        return retrofit.create(GetPokemonListClient::class.java)
     }
 
 }
