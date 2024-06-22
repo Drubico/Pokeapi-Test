@@ -41,8 +41,6 @@ class PokemonRepository
                     totalPokemons = response.data.count,
                     pokemons=pokemonList
                 )
-                println(response.data)
-                println(results)
                 return results
             }
             is ApiResponse.Error -> {
