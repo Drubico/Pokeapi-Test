@@ -26,6 +26,8 @@ lifecycleViewmodelKtx = "2.8.2"
 fragmentKtx = "1.8.0"
 #Glide
 glide = "4.12.0"
+navigationFragmentKtx = "2.7.7"
+navigationUiKtx = "2.7.7"
 [libraries]
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +57,8 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 # Imagenes Glide
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
