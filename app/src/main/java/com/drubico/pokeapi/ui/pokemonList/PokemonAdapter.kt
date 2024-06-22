@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.ui.model.PokemonModel
 
-class PokemonAdapter(private val pokemonList: List<PokemonModel>) :
+class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
     RecyclerView.Adapter<PokemonViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonViewHolder {
@@ -20,13 +20,23 @@ class PokemonAdapter(private val pokemonList: List<PokemonModel>) :
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = pokemonList[position]
         holder.pokemonNameTextView.text = pokemon.name
+        holder.pokemonNumberTextView.text = "#${pokemon.id}"
         Glide.with(holder.pokemonImageView.context)
             .load(pokemon.image)
             .into(holder.pokemonImageView)
-
     }
 
     override fun getItemCount(): Int {
         return pokemonList.size
     }
+
+    fun updatePokemonList(newPokemonList: List<PokemonModel>) {
+        val previousSize = pokemonList.size
+        val filteredList = newPokemonList.filterNot { newPokemon ->
+            pokemonList.any { it.id == newPokemon.id }
+        }
+        pokemonList.addAll(filteredList)
+        notifyItemRangeInserted(previousSize, newPokemonList.size)
+    }
 }
+
