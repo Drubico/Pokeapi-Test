@@ -5,7 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.drubico.pokeapi.ui.pokemonList.PokemonListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * MainActivity
+ * Author: Diego Rubi
+ **/
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +23,13 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        if (savedInstanceState == null) {
+            val fragment = PokemonListFragment()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .commit()
         }
     }
 }
