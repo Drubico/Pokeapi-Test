@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="semi_transparent">#80000000</color>
+
+    <color name="colorPrimary">#FF0000</color> <!-- Red from Pokéball -->
+    <color name="colorPrimaryVariant">#CC0000</color> <!-- Darker red -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- White -->
+    <color name="colorSecondary">#000000</color> <!-- Black from Pokéball -->
+    <color name="colorSecondaryVariant">#333333</color> <!-- Darker black/gray -->
 </resources>

@@ -1,9 +1,11 @@
 package com.drubico.pokeapi.ui.pokemonList
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -11,19 +13,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.drubico.pokeapi.R
+import com.drubico.pokeapi.ui.dialog.LoadingAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PokemonListFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = PokemonListFragment()
-    }
-
     private val viewModel: PokemonListViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
-    private lateinit var loadingImageView: LottieAnimationView
     private lateinit var adapter: PokemonAdapter
+    private lateinit var loadingDialog : LoadingAlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getPokemons()
@@ -35,7 +33,7 @@ class PokemonListFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_pokemon_list, container, false)
         recyclerView = view.findViewById(R.id.rv_listPokemon)
-        loadingImageView = view.findViewById(R.id.loadingAnimation)
+        loadingDialog = LoadingAlertDialog(requireContext(),container!!)
         return view
     }
 
@@ -60,25 +58,23 @@ class PokemonListFragment : Fragment() {
             }
         })
 
-        viewModel.pokemons.observe(viewLifecycleOwner, Observer { pokemons ->
+        viewModel.pokemons.observe(viewLifecycleOwner) { pokemons ->
             if (pokemons.isNullOrEmpty()) {
-                recyclerView.visibility = View.GONE
-                loadingImageView.visibility = View.VISIBLE
+                loadingDialog.show()
             } else {
-                recyclerView.visibility = View.VISIBLE
-                loadingImageView.visibility = View.GONE
+                loadingDialog.dismiss()
                 adapter.updatePokemonList(pokemons)
             }
-        })
+        }
 
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if (isLoading && adapter.itemCount == 0) {
-                recyclerView.visibility = View.GONE
-                loadingImageView.visibility = View.VISIBLE
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                loadingDialog.show()
+
             } else {
-                recyclerView.visibility = View.VISIBLE
-                loadingImageView.visibility = View.GONE
+                loadingDialog.dismiss()
             }
-        })
+        }
     }
+
 }

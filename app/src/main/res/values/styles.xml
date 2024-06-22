@@ -1,0 +1,19 @@
+<resources>
+    <style name="LoadingDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="CustomSearchView" parent="Widget.AppCompat.SearchView">
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="searchIcon">@drawable/ic_search_custom</item>
+        <item name="closeIcon">@drawable/ic_close_custom</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@drawable/search_view_background</item>
+        <!-- Set these items to transparent to override default colors -->
+        <item name="android:textColor">@android:color/transparent</item>
+        <item name="android:textColorHint">@android:color/transparent</item>
+    </style>
+</resources>

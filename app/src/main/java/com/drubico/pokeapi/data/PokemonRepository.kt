@@ -1,6 +1,7 @@
 package com.drubico.pokeapi.data
 
 import com.drubico.pokeapi.data.network.ApiResponse
+import com.drubico.pokeapi.data.network.getAllPokemon.GetAllPokemonListService
 import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListService
 import com.drubico.pokeapi.data.network.getPokemonList.Pokemon
 import com.drubico.pokeapi.ui.model.PokemonListModel
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 class PokemonRepository
 @Inject constructor(
-    private val getPokemonListService: GetPokemonListService
+    private val getPokemonListService: GetPokemonListService,
+    private val getAllPokemonListService: GetAllPokemonListService,
 )
 {
     private fun String.extractPokemonId(): Int? {
@@ -29,6 +31,29 @@ class PokemonRepository
 
     suspend fun getPokemonList(offset: Int,limit:Int): PokemonListModel?{
         when (val response = getPokemonListService.getListPokemon(offset,limit)) {
+            is ApiResponse.Success -> {
+                val pokemonList = response.data.results.map {
+                    PokemonModel(
+                        id = it.url.extractPokemonId()?:0,
+                        name = it.name,
+                        image = getPokemonImageUrl(it.url.extractPokemonId()?:1)
+                    )
+                }
+                val results =  PokemonListModel(
+                    totalPokemons = response.data.count,
+                    pokemons=pokemonList
+                )
+                return results
+            }
+            is ApiResponse.Error -> {
+                println(response)
+            }
+        }
+        return null
+    }
+
+    suspend fun getAllPokemonList(): PokemonListModel?{
+        when (val response = getAllPokemonListService.getListAllPokemon()) {
             is ApiResponse.Success -> {
                 val pokemonList = response.data.results.map {
                     PokemonModel(

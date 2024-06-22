@@ -1,6 +1,7 @@
 package com.drubico.pokeapi.core.di
 
 import com.drubico.pokeapi.BuildConfig
+import com.drubico.pokeapi.data.network.getAllPokemon.GetAllPokemonListClient
 import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListClient
 import dagger.Module
 import dagger.Provides
@@ -37,6 +38,12 @@ class NetworkModule {
     @Singleton
     fun providePokemonList(retrofit: Retrofit): GetPokemonListClient {
         return retrofit.create(GetPokemonListClient::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAllPokemonList(retrofit: Retrofit): GetAllPokemonListClient {
+        return retrofit.create(GetAllPokemonListClient::class.java)
     }
 
 }
