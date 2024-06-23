@@ -15,24 +15,4 @@
             app:destination="@id/pokemonListFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/pokemonFilterFragment"
-        android:name="com.drubico.pokeapi.ui.pokemonFilter.PokemonFilterFragment"
-        android:label="Pokemon Filter"
-        tools:layout="@layout/fragment_pokemon_filter">
-        <action
-            android:id="@+id/action_filters"
-            app:destination="@id/pokemonFilterFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/pokemonSearchFragment"
-        android:name="com.drubico.pokeapi.ui.pokemonSearch.PokemonSearchFragment"
-        android:label="Pokemon Search"
-        tools:layout="@layout/fragment_pokemon_search">
-        <action
-            android:id="@+id/action_search"
-            app:destination="@id/pokemonSearchFragment" />
-    </fragment>
-
 </navigation>

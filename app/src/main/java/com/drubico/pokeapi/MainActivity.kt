@@ -6,8 +6,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,8 +23,8 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNavigationView.setupWithNavController(navController)
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

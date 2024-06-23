@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">PokeApi</string>
-    <string name="filtros">Filtros</string>
-    <string name="todos_los_pokemon">Todos los Pokémon</string>
-    <string name="busqueda">Búsqueda</string>
+    <string name="search">Busqueda\n</string>
 </resources>
