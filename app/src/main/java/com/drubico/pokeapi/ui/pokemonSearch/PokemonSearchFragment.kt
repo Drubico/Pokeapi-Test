@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.ui.dialog.LoadingAlertDialog
-import com.drubico.pokeapi.ui.pokemonList.PokemonAdapter
+import com.drubico.pokeapi.ui.pokemonSearch.adapter.PokemonSearchAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

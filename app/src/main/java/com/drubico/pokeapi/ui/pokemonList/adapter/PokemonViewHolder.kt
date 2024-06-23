@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.pokemonList
+package com.drubico.pokeapi.ui.pokemonList.adapter
 
 import android.view.View
 import android.widget.ImageView

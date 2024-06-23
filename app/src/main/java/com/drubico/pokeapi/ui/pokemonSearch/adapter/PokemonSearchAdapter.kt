@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.pokemonSearch
+package com.drubico.pokeapi.ui.pokemonSearch.adapter
 
 import android.view.LayoutInflater
 import android.view.View

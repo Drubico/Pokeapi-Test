@@ -1,5 +1,7 @@
 package com.drubico.pokeapi.data
 
+import com.drubico.pokeapi.data.local.dao.PokemonDao
+import com.drubico.pokeapi.data.local.entities.PokemonEntity
 import com.drubico.pokeapi.data.network.ApiResponse
 import com.drubico.pokeapi.data.network.getAllPokemon.GetAllPokemonListService
 import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListService
@@ -13,6 +15,7 @@ class PokemonRepository
 @Inject constructor(
     private val getPokemonListService: GetPokemonListService,
     private val getAllPokemonListService: GetAllPokemonListService,
+    private val pokemonDao: PokemonDao,
 )
 {
     private fun String.extractPokemonId(): Int? {
@@ -43,6 +46,8 @@ class PokemonRepository
                     totalPokemons = response.data.count,
                     pokemons=pokemonList
                 )
+
+                pokemonDao.insertAll(pokemonList.map { castToEntity(it) }  )
                 return results
             }
             is ApiResponse.Error -> {
@@ -74,4 +79,11 @@ class PokemonRepository
         }
         return null
     }
+
+    fun castToEntity(pokemonModel: PokemonModel)= PokemonEntity(
+            id = pokemonModel.id,
+            name = pokemonModel.name,
+            image = pokemonModel.image
+        )
+
 }

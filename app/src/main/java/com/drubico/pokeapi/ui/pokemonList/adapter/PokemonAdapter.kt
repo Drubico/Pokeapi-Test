@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.pokemonList
+package com.drubico.pokeapi.ui.pokemonList.adapter
 
 import android.view.LayoutInflater
 import android.view.View
