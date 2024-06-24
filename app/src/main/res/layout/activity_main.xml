@@ -9,18 +9,13 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        app:titleTextColor="@color/white"
+        app:subtitleTextColor="@color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
-        <EditText
-            android:id="@+id/searchEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints=""
-            android:hint="@string/search"
-            android:inputType=""
-            android:visibility="gone"
-            android:background="@android:color/white"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.fragment.app.FragmentContainerView
@@ -30,22 +25,5 @@
         android:layout_below="@id/toolbar"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/nav_graph" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/search"
-        app:srcCompat="@drawable/ic_search_custom"
-        android:backgroundTint="@color/colorPrimary"
-        android:tint="@color/white"
-        app:backgroundTint="@color/colorPrimary"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        >
-
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 </RelativeLayout>

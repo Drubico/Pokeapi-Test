@@ -11,8 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.ui.model.PokemonModel
+import com.drubico.pokeapi.ui.pokemonList.PokemonListViewModel
 
-class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
+class PokemonAdapter(
+    private var pokemonList: MutableList<PokemonModel>,
+    private val viewModel: PokemonListViewModel
+) :
     RecyclerView.Adapter<PokemonViewHolder>(), Filterable {
 
     private var filteredPokemonList: MutableList<PokemonModel> = pokemonList.toMutableList()
@@ -25,7 +29,8 @@ class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = filteredPokemonList[position]
-        holder.cardPokemon.backgroundTintList = ColorStateList.valueOf(Color.parseColor(pokemon.color))
+        holder.cardPokemon.backgroundTintList =
+            ColorStateList.valueOf(Color.parseColor(pokemon.color))
         holder.pokemonNameTextView.text = pokemon.name
         holder.pokemonNumberTextView.text = "#${pokemon.id}"
         Glide.with(holder.pokemonImageView.context)
@@ -60,13 +65,15 @@ class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charString = constraint?.toString() ?: ""
-                filteredPokemonList = if (charString.isEmpty()) {
-                    pokemonList.toMutableList()
-                } else {
-                    pokemonList.filter {
-                        it.name.contains(charString, true) // Case insensitive search
-                    }.toMutableList()
-                }
+                filteredPokemonList =
+                    if (charString.isEmpty() || charString.equals("clear", ignoreCase = true)) {
+                        pokemonList.toMutableList()
+                    } else {
+                        val filterPattern = charString.lowercase().trim()
+                        pokemonList.filter {
+                            it.type.contains(filterPattern, true)
+                        }.toMutableList()
+                    }
                 val filterResults = FilterResults()
                 filterResults.values = filteredPokemonList
                 return filterResults
@@ -74,6 +81,7 @@ class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 filteredPokemonList = results?.values as MutableList<PokemonModel>
+                viewModel.updateListEmptyState(filteredPokemonList.isEmpty())
                 notifyDataSetChanged() // notifyDataSetChanged is acceptable here as it's difficult to determine the exact changes in a filtered list
             }
         }

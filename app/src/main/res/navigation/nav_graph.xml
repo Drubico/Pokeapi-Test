@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/pokemonListFragment"
         android:name="com.drubico.pokeapi.ui.pokemonList.PokemonListFragment"
-        android:label="Pokemon List"
+        android:label="Pokedex"
         tools:layout="@layout/fragment_pokemon_list">
         <action
             android:id="@+id/action_all_pokemon"

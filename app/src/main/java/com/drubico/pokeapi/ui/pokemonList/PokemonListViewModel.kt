@@ -1,5 +1,6 @@
 package com.drubico.pokeapi.ui.pokemonList
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,8 @@ class PokemonListViewModel
 ) : ViewModel() {
     val pokemons = MutableLiveData<MutableList<PokemonModel>>()
     val isLoading = MutableLiveData<Boolean>()
+    private val _isListEmpty = MutableLiveData<Boolean>()
+    val isListEmpty: LiveData<Boolean> get() = _isListEmpty
     private var page = 0
     private val limit = 15
     private var isLoadingInternal = false
@@ -48,5 +51,9 @@ class PokemonListViewModel
                 isLoading.postValue(false)
             }
         }
+    }
+
+    fun updateListEmptyState(isEmpty: Boolean) {
+        _isListEmpty.value = isEmpty
     }
 }
