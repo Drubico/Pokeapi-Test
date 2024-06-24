@@ -38,7 +38,7 @@ class PokemonListViewModel
 
                 if (newPokemonList.isNotEmpty()) {
                     currentList.addAll(newPokemonList)
-                    pokemons.postValue(currentList) // Usar postValue para evitar problemas de concurrencia
+                    pokemons.postValue(currentList)
                     page++
                 }
             } catch (e: Exception) {

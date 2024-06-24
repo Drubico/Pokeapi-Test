@@ -1,5 +1,7 @@
 package com.drubico.pokeapi.ui.pokemonList.adapter
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +25,7 @@ class PokemonAdapter(private var pokemonList: MutableList<PokemonModel>) :
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = filteredPokemonList[position]
+        holder.cardPokemon.backgroundTintList = ColorStateList.valueOf(Color.parseColor(pokemon.color))
         holder.pokemonNameTextView.text = pokemon.name
         holder.pokemonNumberTextView.text = "#${pokemon.id}"
         Glide.with(holder.pokemonImageView.context)

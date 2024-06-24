@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drubico.pokeapi.R
 
 class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val cardPokemon: View = itemView.findViewById(R.id.cardPokemon)
     val pokemonNumberTextView: TextView = itemView.findViewById(R.id.textViewPokemonNumber)
     val pokemonImageView: ImageView = itemView.findViewById(R.id.imageViewPokemon)
     val pokemonNameTextView: TextView = itemView.findViewById(R.id.textViewPokemonName)

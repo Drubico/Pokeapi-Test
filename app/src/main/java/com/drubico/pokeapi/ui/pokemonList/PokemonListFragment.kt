@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.ui.dialog.LoadingAlertDialog
 import com.drubico.pokeapi.ui.pokemonList.adapter.PokemonAdapter
@@ -24,6 +26,9 @@ class PokemonListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PokemonAdapter
     private lateinit var loadingDialog : LoadingAlertDialog
+    private lateinit var loadingAnimationLottie: LottieAnimationView
+    private lateinit var button_more_pokemon: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getPokemons()
@@ -36,6 +41,11 @@ class PokemonListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_pokemon_list, container, false)
         recyclerView = view.findViewById(R.id.rv_listPokemon)
         loadingDialog = LoadingAlertDialog(requireContext(),container!!)
+        loadingAnimationLottie = view.findViewById(R.id.loading_animation)
+        button_more_pokemon = view.findViewById(R.id.btn_more_pokemon)
+        button_more_pokemon.setOnClickListener {
+            viewModel.getPokemons()
+        }
         return view
     }
 
@@ -53,10 +63,10 @@ class PokemonListFragment : Fragment() {
                 val layoutManager = recyclerView.layoutManager as GridLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                if (totalItemCount <= (lastVisibleItem + 5)) {
-                    viewModel.getPokemons()
-                }
+                if (totalItemCount <= (lastVisibleItem + 2)) {
+                    button_more_pokemon.visibility = View.VISIBLE
+                }else
+                    button_more_pokemon.visibility = View.GONE
             }
         })
 
@@ -71,12 +81,21 @@ class PokemonListFragment : Fragment() {
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
-                loadingDialog.show()
-
+                recyclerView.visibility = View.GONE
+                loadingAnimationLottie.visibility = View.VISIBLE
             } else {
-                loadingDialog.dismiss()
+                recyclerView.visibility = View.VISIBLE
+                loadingAnimationLottie.visibility = View.GONE
             }
         }
+
+    }
+    fun filterPokemonList(query: String) {
+        adapter.filter.filter(query)
+    }
+
+    fun clearSearch() {
+        adapter.filter.filter("")
     }
 
 }
