@@ -44,6 +44,7 @@ class PokemonRepository
                         image = getPokemonImageUrl(it.url.extractPokemonId() ?: 1),
                         color = type?.color ?: "#000000",
                         type = type?.name ?: "Unknown",
+                        typeDisplay = type?.nameDisplay?: "Desconocido"
                     )
                 }
                 val results = PokemonListModel(
@@ -67,6 +68,9 @@ class PokemonRepository
         id = pokemonModel.id,
         name = pokemonModel.name,
         image = pokemonModel.image,
+        color = pokemonModel.color,
+        type = pokemonModel.type,
+        typeDisplay = pokemonModel.typeDisplay,
     )
 
     private suspend fun getPokemonType(pokemonId: Int): PokemonTypeEntity? {
