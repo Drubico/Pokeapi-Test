@@ -61,4 +61,5 @@ enum class PREFERENCES {
     PAGE,
     LIMIT,
     NEXT_OFFSET,
+    COUNTER_POKEMON,
 }

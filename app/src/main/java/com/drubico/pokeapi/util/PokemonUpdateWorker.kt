@@ -6,15 +6,17 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.drubico.pokeapi.R
-import com.drubico.pokeapi.core.di.PREFERENCES
-import com.drubico.pokeapi.core.di.SharedPreferencesProvider
 import com.drubico.pokeapi.data.PokemonRepository
+import com.drubico.pokeapi.core.di.SharedPreferencesProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class PokemonUpdateWorker @AssistedInject constructor(
@@ -26,12 +28,21 @@ class PokemonUpdateWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         return@withContext try {
-            repository.getPokemonList()
+            repository.getPokemonList(true)
             showNotification("Actualización de Pokémon", "La lista de Pokémon se ha actualizado.")
+            scheduleNextWork()
             Result.success()
         } catch (e: Exception) {
+            scheduleNextWork()
             Result.retry()
         }
+    }
+
+    private fun scheduleNextWork() {
+        val nextWorkRequest = OneTimeWorkRequestBuilder<PokemonUpdateWorker>()
+            .setInitialDelay(30, TimeUnit.SECONDS)
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(nextWorkRequest)
     }
 
     @SuppressLint("MissingPermission")

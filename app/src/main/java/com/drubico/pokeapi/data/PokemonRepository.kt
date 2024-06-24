@@ -38,16 +38,16 @@ class PokemonRepository
     }
 
 
-    suspend fun getPokemonList() {
-        val page: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.PAGE, 0)
-        val limit: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.LIMIT, 15)
-        val nextOffset: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.NEXT_OFFSET, page*limit)
-
-        when (val response = getPokemonListService.getListPokemon(nextOffset, limit)) {
+    suspend fun getPokemonList(isFromNotification: Boolean = false) {
+        val page: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.COUNTER_POKEMON, 0)
+        val limit = if (isFromNotification) 10 else 15
+        var counter = sharedPreferencesProvider.getIntegerValue(PREFERENCES.COUNTER_POKEMON, 0)
+        when (val response = getPokemonListService.getListPokemon(counter, limit)) {
             is ApiResponse.Success -> {
                 val pokemonList = response.data.results.map {
                     val id = it.url.extractPokemonId() ?: 0
                     val type = getPokemonType(id)
+                    counter += 1
                     PokemonModel(
                         id = id,
                         name = it.name,
@@ -60,14 +60,14 @@ class PokemonRepository
 
                 pokemonDao.insertAll(pokemonList.map { castToEntity(it) })
                 sharedPreferencesProvider.setIntegerValue(PREFERENCES.PAGE, page + 1)
+                sharedPreferencesProvider.setIntegerValue(PREFERENCES.COUNTER_POKEMON, counter)
             }
+
             is ApiResponse.Error -> {
                 println(response)
             }
         }
     }
-
-
 
 
     private fun castToEntity(pokemonModel: PokemonModel) = PokemonEntity(
@@ -98,6 +98,7 @@ class PokemonRepository
             entityList.map { castToModel(it) }
         }
     }
+
     private fun castToModel(pokemonEntity: PokemonEntity) = PokemonModel(
         id = pokemonEntity.id,
         name = pokemonEntity.name,
