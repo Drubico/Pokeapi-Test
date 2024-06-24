@@ -28,8 +28,8 @@ class SharedPreferencesProvider
         }
     }
 
-    fun getIntegerValue(preference: PREFERENCES): Int {
-        return sharedPreferences.getInt(preference.name, -1)
+    fun getIntegerValue(preference: PREFERENCES, default: Int = -1): Int {
+        return sharedPreferences.getInt(preference.name, default)
     }
 
     fun clearValue(preference: PREFERENCES) {
@@ -60,4 +60,5 @@ class SharedPreferencesProvider
 enum class PREFERENCES {
     PAGE,
     LIMIT,
+    NEXT_OFFSET,
 }

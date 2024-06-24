@@ -24,7 +24,7 @@ class NetworkModule {
         }
 
         val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
+//            .addInterceptor(logging) // Para ver logs de las peticiones HTTP
             .build()
 
         return Retrofit.Builder()

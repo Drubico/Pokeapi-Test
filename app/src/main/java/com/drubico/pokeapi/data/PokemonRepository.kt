@@ -1,5 +1,7 @@
 package com.drubico.pokeapi.data
 
+import com.drubico.pokeapi.core.di.PREFERENCES
+import com.drubico.pokeapi.core.di.SharedPreferencesProvider
 import com.drubico.pokeapi.data.local.dao.PokemonDao
 import com.drubico.pokeapi.data.local.entities.PokemonEntity
 import com.drubico.pokeapi.data.local.entities.PokemonTypeEntity
@@ -9,6 +11,9 @@ import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListService
 import com.drubico.pokeapi.data.network.getpokemon.GetPokemonService
 import com.drubico.pokeapi.ui.model.PokemonListModel
 import com.drubico.pokeapi.ui.model.PokemonModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.net.URL
 import javax.inject.Inject
 
 class PokemonRepository
@@ -16,6 +21,7 @@ class PokemonRepository
     private val getPokemonListService: GetPokemonListService,
     private val getPokemonService: GetPokemonService,
     private val pokemonDao: PokemonDao,
+    private val sharedPreferencesProvider: SharedPreferencesProvider,
 ) {
     private fun String.extractPokemonId(): Int? {
         return try {
@@ -32,8 +38,12 @@ class PokemonRepository
     }
 
 
-    suspend fun getPokemonList(offset: Int, limit: Int): PokemonListModel? {
-        when (val response = getPokemonListService.getListPokemon(offset, limit)) {
+    suspend fun getPokemonList() {
+        val page: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.PAGE, 0)
+        val limit: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.LIMIT, 15)
+        val nextOffset: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.NEXT_OFFSET, page*limit)
+
+        when (val response = getPokemonListService.getListPokemon(nextOffset, limit)) {
             is ApiResponse.Success -> {
                 val pokemonList = response.data.results.map {
                     val id = it.url.extractPokemonId() ?: 0
@@ -44,24 +54,20 @@ class PokemonRepository
                         image = getPokemonImageUrl(it.url.extractPokemonId() ?: 1),
                         color = type?.color ?: "#000000",
                         type = type?.name ?: "Unknown",
-                        typeDisplay = type?.nameDisplay?: "Desconocido"
+                        typeDisplay = type?.nameDisplay ?: "Desconocido"
                     )
                 }
-                val results = PokemonListModel(
-                    totalPokemons = response.data.count,
-                    pokemons = pokemonList
-                )
 
                 pokemonDao.insertAll(pokemonList.map { castToEntity(it) })
-                return results
+                sharedPreferencesProvider.setIntegerValue(PREFERENCES.PAGE, page + 1)
             }
-
             is ApiResponse.Error -> {
                 println(response)
             }
         }
-        return null
     }
+
+
 
 
     private fun castToEntity(pokemonModel: PokemonModel) = PokemonEntity(
@@ -87,4 +93,17 @@ class PokemonRepository
         }
     }
 
+    fun getPokemonListFromDb(): Flow<List<PokemonModel>> {
+        return pokemonDao.getAllPokemons().map { entityList ->
+            entityList.map { castToModel(it) }
+        }
+    }
+    private fun castToModel(pokemonEntity: PokemonEntity) = PokemonModel(
+        id = pokemonEntity.id,
+        name = pokemonEntity.name,
+        image = pokemonEntity.image,
+        color = pokemonEntity.color,
+        type = pokemonEntity.type,
+        typeDisplay = pokemonEntity.typeDisplay,
+    )
 }

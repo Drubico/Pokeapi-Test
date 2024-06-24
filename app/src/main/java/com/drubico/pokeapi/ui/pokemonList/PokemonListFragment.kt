@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -72,7 +73,6 @@ class PokemonListFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         adapter = PokemonAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = adapter
-
         pokemonTypes.forEach { type ->
             val button = Button(requireContext())
             button.layoutParams = LinearLayout.LayoutParams(
@@ -107,9 +107,9 @@ class PokemonListFragment : Fragment() {
                     button_more_pokemon.visibility = View.GONE
             }
         })
-        viewModel.pokemons.observe(viewLifecycleOwner) { pokemons ->
-            if (!pokemons.isNullOrEmpty()) {
-                adapter.updatePokemonList(pokemons)
+        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList ->
+            if (!pokemonList.isNullOrEmpty()) {
+                adapter.updatePokemonList(pokemonList)
             }
         }
         viewModel.isListEmpty.observe(viewLifecycleOwner) { isEmpty ->
