@@ -32,10 +32,15 @@ class PokemonListViewModel
     private val _isNetworkError = MutableLiveData<Boolean>()
     val isNetworkError : LiveData<Boolean> get() = _isNetworkError
 
+    private var previousPokemonList: List<PokemonModel> = emptyList()
+
+    private val _newItemsCount = MutableLiveData<Int>()
+    val newItemsCount: LiveData<Int> get() = _newItemsCount
+
 
     fun getPokemonsFromDb() = viewModelScope.launch {
         getPokemonListFromDb().collect { pokemons ->
-            _pokemonList.value = pokemons
+            updatePokemonList(pokemons)
         }
     }
 
@@ -57,5 +62,14 @@ class PokemonListViewModel
 
     fun updateListEmptyState(isEmpty: Boolean) {
         _isListEmpty.value = isEmpty
+    }
+
+    private fun updatePokemonList(newPokemonList: List<PokemonModel>) {
+        val newItems = newPokemonList.size - previousPokemonList.size
+        if (newItems > 0) {
+            _newItemsCount.value = newItems
+        }
+        _pokemonList.value = newPokemonList
+        previousPokemonList = newPokemonList
     }
 }

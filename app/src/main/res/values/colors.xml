@@ -32,4 +32,9 @@
     <color name="fairy">#D685AD</color>
     <color name="unknown">#68A090</color>
     <color name="shadow">#705898</color>
+
+    <color name="notificationErrorColor">#D32F2F</color> <!-- Rojo Material Design -->
+    <color name="notificationSuccessColor">#4CAF50</color> <!-- Verde Material Design -->
+
+
 </resources>

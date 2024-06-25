@@ -15,10 +15,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.airbnb.lottie.LottieAnimationView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.data.local.PokemonTypesDB.pokemonTypeList
+import com.drubico.pokeapi.ui.dialog.ToastType
+import com.drubico.pokeapi.ui.dialog.toastMessageCustom
 import com.drubico.pokeapi.ui.pokemonList.adapter.PokemonAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,6 +74,95 @@ class PokemonListFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         adapter = PokemonAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = adapter
+        filterPokemonType()
+        rvAddOnScrollListener()
+
+        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList -> // Lista para recyclerView
+            if (!pokemonList.isNullOrEmpty()) {
+                adapter.updatePokemonList(pokemonList)
+            }
+        }
+
+        viewModel.isListEmpty.observe(viewLifecycleOwner) { isEmpty -> // vemos si la lista está vacía
+            if (isEmpty) {
+                failImage.visibility = View.VISIBLE
+                failText.visibility = View.VISIBLE
+            } else {
+                failImage.visibility = View.GONE
+                failText.visibility = View.GONE
+            }
+        }
+
+        viewModel.isNetworkError.observe(viewLifecycleOwner) { isNetworkError -> // vemos si hubo un error de red
+            if (isNetworkError) {
+                tvNetworkError.visibility = View.VISIBLE
+                toastMessageCustom("Hubo un error de red, intentelo de nuevo.", ToastType.ERROR)
+                if (viewModel.pokemonList.value?.isEmpty() == true) {
+                    failImage.visibility = View.VISIBLE
+                    failText.visibility = View.VISIBLE
+                    buttonGetMorePokemon.visibility = View.VISIBLE
+                }
+            } else {
+                tvNetworkError.visibility = View.GONE
+                failImage.visibility = View.GONE
+                failText.visibility = View.GONE
+            }
+
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> // vemos si está cargando
+            if (isLoading) {
+                loadingAnimationLottie.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                filters.visibility = View.GONE
+                buttonGetMorePokemon.visibility = View.GONE
+            } else {
+                loadingAnimationLottie.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                filters.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel.newItemsCount.observe(viewLifecycleOwner) { newItemsCount -> // vemos si se agregaron nuevos pokemons
+            if (newItemsCount > 0) {
+                loadingAnimationLottie.visibility = View.GONE
+                failImage.visibility = View.GONE
+                failText.visibility = View.GONE
+                toastMessageCustom(
+                    "Se guardaron $newItemsCount nuevos pokemon!.",
+                    ToastType.SUCCESS
+                )
+            }
+        }
+
+    }
+
+    private fun filterPokemonList(query: String) {
+        adapter.filter.filter(query)
+    }
+
+    private fun rvAddOnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                if (!adapter.isListFiltered()) {
+                    if (totalItemCount <= (lastVisibleItem + 2))
+                        buttonGetMorePokemon.visibility = View.VISIBLE
+                    else
+                        buttonGetMorePokemon.visibility = View.GONE
+                }
+                if (adapter.isListFiltered()) {
+                    buttonGetMorePokemon.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+
+    private fun filterPokemonType(){
         pokemonTypeList.forEach { type ->
             val button = Button(requireContext())
             button.layoutParams = LinearLayout.LayoutParams(
@@ -93,67 +183,6 @@ class PokemonListFragment : Fragment() {
             }
             linearLayoutTypes.addView(button)
         }
-
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val layoutManager = recyclerView.layoutManager as GridLayoutManager
-                val totalItemCount = layoutManager.itemCount
-                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                if (!adapter.isListFiltered()) {
-                    if (totalItemCount <= (lastVisibleItem + 2))
-                        buttonGetMorePokemon.visibility = View.VISIBLE
-                    else
-                        buttonGetMorePokemon.visibility = View.GONE
-                }
-                if (adapter.isListFiltered()) {
-                    buttonGetMorePokemon.visibility = View.GONE
-                }
-            }
-        })
-        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList ->
-            if (!pokemonList.isNullOrEmpty()) {
-                adapter.updatePokemonList(pokemonList)
-            }
-        }
-        viewModel.isListEmpty.observe(viewLifecycleOwner) { isEmpty ->
-            if (isEmpty) {
-                failImage.visibility = View.VISIBLE
-                failText.visibility = View.VISIBLE
-            } else {
-                failImage.visibility = View.GONE
-                failText.visibility = View.GONE
-            }
-        }
-
-        viewModel.isNetworkError.observe(viewLifecycleOwner){isNetworkError->
-            if (isNetworkError) {
-                tvNetworkError.visibility = View.VISIBLE
-            }
-            else {
-                tvNetworkError.visibility = View.GONE
-            }
-
-        }
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                loadingAnimationLottie.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-                filters.visibility = View.GONE
-                buttonGetMorePokemon.visibility = View.GONE
-            } else {
-                loadingAnimationLottie.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-                filters.visibility = View.VISIBLE
-            }
-        }
-
-    }
-
-    private fun filterPokemonList(query: String) {
-        adapter.filter.filter(query)
     }
 
 }
