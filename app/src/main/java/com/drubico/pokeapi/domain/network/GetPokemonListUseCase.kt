@@ -1,5 +1,6 @@
 package com.drubico.pokeapi.domain.network
 
+import android.content.Context
 import com.drubico.pokeapi.data.PokemonRepository
 import javax.inject.Inject
 
@@ -8,5 +9,5 @@ class GetPokemonListUseCase
 constructor(
     private val repository: PokemonRepository
 ) {
-    suspend operator fun invoke() = repository.getPokemonList()
+    suspend operator fun invoke(context:Context) = repository.getPokemonList(context = context)
 }

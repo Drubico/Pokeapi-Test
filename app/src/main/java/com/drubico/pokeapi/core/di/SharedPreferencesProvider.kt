@@ -40,8 +40,8 @@ class SharedPreferencesProvider
         sharedPreferences.edit().clear().apply()
     }
 
-    fun getBool(preference: PREFERENCES): Boolean {
-        return sharedPreferences.getBoolean(preference.name, false)
+    fun getBool(preference: PREFERENCES,default: Boolean = false): Boolean {
+        return sharedPreferences.getBoolean(preference.name, default)
     }
 
     fun setBool(preference: PREFERENCES, value: Boolean) {
@@ -59,7 +59,6 @@ class SharedPreferencesProvider
 
 enum class PREFERENCES {
     PAGE,
-    LIMIT,
-    NEXT_OFFSET,
     COUNTER_POKEMON,
+    HAVE_NEW_POKEMONS,
 }

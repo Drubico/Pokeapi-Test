@@ -1,5 +1,6 @@
 package com.drubico.pokeapi.data
 
+import android.content.Context
 import com.drubico.pokeapi.core.di.PREFERENCES
 import com.drubico.pokeapi.core.di.SharedPreferencesProvider
 import com.drubico.pokeapi.data.local.dao.PokemonDao
@@ -9,11 +10,10 @@ import com.drubico.pokeapi.data.local.entities.pokemonTypes
 import com.drubico.pokeapi.data.network.ApiResponse
 import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListService
 import com.drubico.pokeapi.data.network.getpokemon.GetPokemonService
-import com.drubico.pokeapi.ui.model.PokemonListModel
 import com.drubico.pokeapi.ui.model.PokemonModel
+import com.drubico.pokeapi.utils.downloadAndSaveImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.net.URL
 import javax.inject.Inject
 
 class PokemonRepository
@@ -38,20 +38,28 @@ class PokemonRepository
     }
 
 
-    suspend fun getPokemonList(isFromNotification: Boolean = false) {
+    suspend fun getPokemonList(
+        context: Context,
+        isFromNotification: Boolean = false,
+        onFailure: (Boolean) -> Unit = {} // lo ocupo para manejar el caso de falla en un contexto fuera del metodo
+    ) {
+        val haveNewPokemons = sharedPreferencesProvider.getBool(PREFERENCES.HAVE_NEW_POKEMONS, true)
+        if (!haveNewPokemons) return
         val page: Int = sharedPreferencesProvider.getIntegerValue(PREFERENCES.COUNTER_POKEMON, 0)
         val limit = if (isFromNotification) 10 else 15
         var counter = sharedPreferencesProvider.getIntegerValue(PREFERENCES.COUNTER_POKEMON, 0)
         when (val response = getPokemonListService.getListPokemon(counter, limit)) {
             is ApiResponse.Success -> {
+                onFailure(false)
+                val hasNextPage = response.data.next != null
                 val pokemonList = response.data.results.map {
                     val id = it.url.extractPokemonId() ?: 0
                     val type = getPokemonType(id)
-                    counter += 1
+                    counter = id
                     PokemonModel(
                         id = id,
                         name = it.name,
-                        image = getPokemonImageUrl(it.url.extractPokemonId() ?: 1),
+                        image = downloadAndSaveImage(context, getPokemonImageUrl(id), "$id.png"),
                         color = type?.color ?: "#000000",
                         type = type?.name ?: "Unknown",
                         typeDisplay = type?.nameDisplay ?: "Desconocido"
@@ -61,9 +69,11 @@ class PokemonRepository
                 pokemonDao.insertAll(pokemonList.map { castToEntity(it) })
                 sharedPreferencesProvider.setIntegerValue(PREFERENCES.PAGE, page + 1)
                 sharedPreferencesProvider.setIntegerValue(PREFERENCES.COUNTER_POKEMON, counter)
+                sharedPreferencesProvider.setBool(PREFERENCES.HAVE_NEW_POKEMONS, hasNextPage)
             }
 
             is ApiResponse.Error -> {
+                onFailure(true)
                 println(response)
             }
         }

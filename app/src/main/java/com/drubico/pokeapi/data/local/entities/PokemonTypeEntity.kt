@@ -9,7 +9,7 @@ data class PokemonTypeEntity(
 )
 
 val pokemonTypes = listOf(
-    PokemonTypeEntity(0, "clear", "", "#000000", "Limpiar"),
+    PokemonTypeEntity(0, "clear", "", "#000000", "Limpiar filtros"),
     PokemonTypeEntity(12, "grass", "https://pokeapi.co/api/v2/type/12/", "#7AC74C", "planta"),
     PokemonTypeEntity(10, "fire", "https://pokeapi.co/api/v2/type/10/", "#EE8130", "fuego"),
     PokemonTypeEntity(11, "water", "https://pokeapi.co/api/v2/type/11/", "#6390F0", "agua"),

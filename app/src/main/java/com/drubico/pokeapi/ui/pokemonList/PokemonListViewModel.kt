@@ -1,5 +1,6 @@
 package com.drubico.pokeapi.ui.pokemonList
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,23 +27,18 @@ class PokemonListViewModel
     private val _pokemonList = MutableLiveData<List<PokemonModel>>()
     val pokemonList: LiveData<List<PokemonModel>> get() = _pokemonList
 
-    init {
-        getPokemons()
-        getPokemonsFromDb()
-    }
-
-    private fun getPokemonsFromDb() = viewModelScope.launch {
+    fun getPokemonsFromDb() = viewModelScope.launch {
         getPokemonListFromDb().collect { pokemons ->
             _pokemonList.value = pokemons
         }
     }
 
-    fun getPokemons() {
+    fun getPokemons(context: Context) {
         isLoadingInternal = true
         isLoading.postValue(true)
         viewModelScope.launch {
             try {
-                getPokemonListUseCase()
+                getPokemonListUseCase(context)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -35,7 +34,7 @@ class PokemonListFragment : Fragment() {
     private lateinit var adapter: PokemonAdapter
     private lateinit var loadingDialog: LoadingAlertDialog
     private lateinit var loadingAnimationLottie: LottieAnimationView
-    private lateinit var button_more_pokemon: Button
+    private lateinit var buttonGetMorePokemon: Button
     private lateinit var linearLayoutTypes: LinearLayout
     private lateinit var filters: HorizontalScrollView
     private lateinit var failImage: ImageView
@@ -43,7 +42,8 @@ class PokemonListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getPokemons()
+        viewModel.getPokemons(requireContext())
+        viewModel.getPokemonsFromDb()
     }
 
     override fun onCreateView(
@@ -54,13 +54,13 @@ class PokemonListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.rv_listPokemon)
         loadingDialog = LoadingAlertDialog(requireContext(), container!!)
         loadingAnimationLottie = view.findViewById(R.id.loading_animation)
-        button_more_pokemon = view.findViewById(R.id.btn_more_pokemon)
+        buttonGetMorePokemon = view.findViewById(R.id.btn_more_pokemon)
         linearLayoutTypes = view.findViewById(R.id.linearLayoutTypes)
         filters = view.findViewById(R.id.filters)
         failImage = view.findViewById(R.id.fail_img)
         failText = view.findViewById(R.id.fail_text)
-        button_more_pokemon.setOnClickListener {
-            viewModel.getPokemons()
+        buttonGetMorePokemon.setOnClickListener {
+            viewModel.getPokemons(requireContext())
             failImage.visibility = View.GONE
             failText.visibility = View.GONE
         }
@@ -94,6 +94,7 @@ class PokemonListFragment : Fragment() {
             linearLayoutTypes.addView(button)
         }
 
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -101,10 +102,15 @@ class PokemonListFragment : Fragment() {
                 val layoutManager = recyclerView.layoutManager as GridLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                if (totalItemCount <= (lastVisibleItem + 2)) {
-                    button_more_pokemon.visibility = View.VISIBLE
-                } else
-                    button_more_pokemon.visibility = View.GONE
+                if (!adapter.isListFiltered()) {
+                    if (totalItemCount <= (lastVisibleItem + 2))
+                        buttonGetMorePokemon.visibility = View.VISIBLE
+                    else
+                        buttonGetMorePokemon.visibility = View.GONE
+                }
+                if (adapter.isListFiltered()) {
+                    buttonGetMorePokemon.visibility = View.GONE
+                }
             }
         })
         viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList ->
@@ -126,7 +132,7 @@ class PokemonListFragment : Fragment() {
                 loadingAnimationLottie.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
                 filters.visibility = View.GONE
-                button_more_pokemon.visibility = View.GONE
+                buttonGetMorePokemon.visibility = View.GONE
             } else {
                 loadingAnimationLottie.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE

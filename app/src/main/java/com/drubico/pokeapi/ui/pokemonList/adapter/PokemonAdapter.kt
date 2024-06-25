@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.ui.model.PokemonModel
 import com.drubico.pokeapi.ui.pokemonList.PokemonListViewModel
+import com.drubico.pokeapi.utils.displayImageFromPath
 
 class PokemonAdapter(
     private var pokemonList: MutableList<PokemonModel>,
@@ -33,13 +34,15 @@ class PokemonAdapter(
             ColorStateList.valueOf(Color.parseColor(pokemon.color))
         holder.pokemonNameTextView.text = pokemon.name
         holder.pokemonNumberTextView.text = "#${pokemon.id}"
-        Glide.with(holder.pokemonImageView.context)
-            .load(pokemon.image)
-            .into(holder.pokemonImageView)
+        displayImageFromPath(holder.pokemonImageView, pokemon.image)
     }
 
     override fun getItemCount(): Int {
         return filteredPokemonList.size
+    }
+
+    fun isListFiltered(): Boolean {
+        return filteredPokemonList!= pokemonList
     }
 
     fun updatePokemonList(newPokemonList: List<PokemonModel>) {
