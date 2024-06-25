@@ -2,4 +2,5 @@
     <string name="app_name">PokeApi</string>
     <string name="search">Busqueda\n</string>
     <string name="charger_more">Cargar mas Pokemon</string>
+    <string name="pokemon_image_url">https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/</string>
 </resources>

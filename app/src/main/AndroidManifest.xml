@@ -40,10 +40,10 @@
             tools:node="merge">
 
             <meta-data
-                android:name="com.drubico.pokeapi.initializer.DependencyGraphInitializer"
+                android:name="com.drubico.pokeapi.core.utils.initializer.DependencyGraphInitializer"
                 android:value="androidx.startup" />
             <meta-data
-                android:name="com.drubico.pokeapi.initializer.WorkManagerInitializer"
+                android:name="com.drubico.pokeapi.core.utils.initializer.WorkManagerInitializer"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"

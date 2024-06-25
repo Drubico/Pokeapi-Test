@@ -1,12 +1,12 @@
-package com.drubico.pokeapi.initializer
+package com.drubico.pokeapi.core.utils.initializer
 
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.startup.Initializer
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
-import androidx.hilt.work.HiltWorkerFactory
 
 class WorkManagerInitializer : Initializer<WorkManager>, Configuration.Provider {
 
@@ -14,7 +14,8 @@ class WorkManagerInitializer : Initializer<WorkManager>, Configuration.Provider 
     lateinit var workerFactory: HiltWorkerFactory
 
     override fun create(context: Context): WorkManager {
-        val hiltEntryPoint = EntryPointAccessors.fromApplication(context, InitializerEntryPoint::class.java)
+        val hiltEntryPoint =
+            EntryPointAccessors.fromApplication(context, InitializerEntryPoint::class.java)
         hiltEntryPoint.inject(this)
         WorkManager.initialize(context, workManagerConfiguration)
         return WorkManager.getInstance(context)

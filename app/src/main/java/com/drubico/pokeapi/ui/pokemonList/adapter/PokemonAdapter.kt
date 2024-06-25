@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.drubico.pokeapi.R
-import com.drubico.pokeapi.ui.model.PokemonModel
+import com.drubico.pokeapi.core.utils.ImageUtils.displayImageFromPath
+import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
 import com.drubico.pokeapi.ui.pokemonList.PokemonListViewModel
-import com.drubico.pokeapi.utils.displayImageFromPath
 
 class PokemonAdapter(
     private var pokemonList: MutableList<PokemonModel>,
@@ -42,7 +41,7 @@ class PokemonAdapter(
     }
 
     fun isListFiltered(): Boolean {
-        return filteredPokemonList!= pokemonList
+        return filteredPokemonList != pokemonList
     }
 
     fun updatePokemonList(newPokemonList: List<PokemonModel>) {

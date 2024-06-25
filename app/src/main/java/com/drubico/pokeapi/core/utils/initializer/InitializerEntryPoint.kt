@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.initializer
+package com.drubico.pokeapi.core.utils.initializer
 
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn

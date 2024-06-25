@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.domain.network
+package com.drubico.pokeapi.domain.local
 
 import com.drubico.pokeapi.data.PokemonRepository
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.core.di
+package com.drubico.pokeapi.core.utils.sharedPreferences
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
@@ -40,7 +40,7 @@ class SharedPreferencesProvider
         sharedPreferences.edit().clear().apply()
     }
 
-    fun getBool(preference: PREFERENCES,default: Boolean = false): Boolean {
+    fun getBool(preference: PREFERENCES, default: Boolean = false): Boolean {
         return sharedPreferences.getBoolean(preference.name, default)
     }
 
@@ -55,10 +55,4 @@ class SharedPreferencesProvider
     companion object {
         const val CONTAINER_NAME = "appendix"
     }
-}
-
-enum class PREFERENCES {
-    PAGE,
-    COUNTER_POKEMON,
-    HAVE_NEW_POKEMONS,
 }

@@ -2,6 +2,7 @@ package com.drubico.pokeapi.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.drubico.pokeapi.core.utils.sharedPreferences.SharedPreferencesProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

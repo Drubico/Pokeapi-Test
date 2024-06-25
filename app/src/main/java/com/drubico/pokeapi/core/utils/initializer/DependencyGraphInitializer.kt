@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.initializer
+package com.drubico.pokeapi.core.utils.initializer
 
 import android.content.Context
 import androidx.startup.Initializer

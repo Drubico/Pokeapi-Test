@@ -15,10 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.airbnb.lottie.LottieAnimationView
 import com.drubico.pokeapi.R
-import com.drubico.pokeapi.data.local.entities.pokemonTypes
-import com.drubico.pokeapi.ui.dialog.LoadingAlertDialog
+import com.drubico.pokeapi.data.local.PokemonTypesDB.pokemonTypeList
 import com.drubico.pokeapi.ui.pokemonList.adapter.PokemonAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,13 +32,13 @@ class PokemonListFragment : Fragment() {
     private val viewModel: PokemonListViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PokemonAdapter
-    private lateinit var loadingDialog: LoadingAlertDialog
     private lateinit var loadingAnimationLottie: LottieAnimationView
     private lateinit var buttonGetMorePokemon: Button
     private lateinit var linearLayoutTypes: LinearLayout
     private lateinit var filters: HorizontalScrollView
     private lateinit var failImage: ImageView
     private lateinit var failText: TextView
+    private lateinit var tvNetworkError: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +52,13 @@ class PokemonListFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_pokemon_list, container, false)
         recyclerView = view.findViewById(R.id.rv_listPokemon)
-        loadingDialog = LoadingAlertDialog(requireContext(), container!!)
         loadingAnimationLottie = view.findViewById(R.id.loading_animation)
         buttonGetMorePokemon = view.findViewById(R.id.btn_more_pokemon)
         linearLayoutTypes = view.findViewById(R.id.linearLayoutTypes)
         filters = view.findViewById(R.id.filters)
         failImage = view.findViewById(R.id.fail_img)
         failText = view.findViewById(R.id.fail_text)
+        tvNetworkError = view.findViewById(R.id.tv_error_network)
         buttonGetMorePokemon.setOnClickListener {
             viewModel.getPokemons(requireContext())
             failImage.visibility = View.GONE
@@ -73,7 +73,7 @@ class PokemonListFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         adapter = PokemonAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = adapter
-        pokemonTypes.forEach { type ->
+        pokemonTypeList.forEach { type ->
             val button = Button(requireContext())
             button.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -126,6 +126,16 @@ class PokemonListFragment : Fragment() {
                 failImage.visibility = View.GONE
                 failText.visibility = View.GONE
             }
+        }
+
+        viewModel.isNetworkError.observe(viewLifecycleOwner){isNetworkError->
+            if (isNetworkError) {
+                tvNetworkError.visibility = View.VISIBLE
+            }
+            else {
+                tvNetworkError.visibility = View.GONE
+            }
+
         }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {

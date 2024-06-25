@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.utils
+package com.drubico.pokeapi.core.utils.notifications
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,9 +10,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.drubico.pokeapi.R
-import com.drubico.pokeapi.core.di.PREFERENCES
+import com.drubico.pokeapi.core.utils.sharedPreferences.PREFERENCES
+import com.drubico.pokeapi.core.utils.sharedPreferences.SharedPreferencesProvider
 import com.drubico.pokeapi.data.PokemonRepository
-import com.drubico.pokeapi.core.di.SharedPreferencesProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -29,17 +29,27 @@ class PokemonUpdateWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         return@withContext try {
-            repository.getPokemonList(context = context,true){failed ->
-                val haveNewPokemons = sharedPreferencesProvider.getBool(PREFERENCES.HAVE_NEW_POKEMONS, true)
+            repository.getPokemonList(context = context, true) { failed ->
+                val haveNewPokemons =
+                    sharedPreferencesProvider.getBool(PREFERENCES.HAVE_NEW_POKEMONS, true)
                 if (!haveNewPokemons) {
-                    showNotification("Actualización de Pokémon", "No tienes más Pokémon disponibles para actualizar.")
+                    showNotification(
+                        "Actualización de Pokémon",
+                        "No tienes más Pokémon disponibles para actualizar."
+                    )
                     return@getPokemonList
                 }
-                if (!failed){
-                    showNotification("Actualización de Pokémon", "La lista de Pokémon se ha actualizado.")
+                if (!failed) {
+                    showNotification(
+                        "Actualización de Pokémon",
+                        "La lista de Pokémon se ha actualizado."
+                    )
                     return@getPokemonList
-                }else {
-                    showNotification("Error al actualizar", "Necesita internet para actualizar la lista de Pokémon. Por favor, intentelo más tarde.")
+                } else {
+                    showNotification(
+                        "Error al actualizar",
+                        "Necesita internet para actualizar la lista de Pokémon. Por favor, intentelo más tarde."
+                    )
                     return@getPokemonList
                 }
             }

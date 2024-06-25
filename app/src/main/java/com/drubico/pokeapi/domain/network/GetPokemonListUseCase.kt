@@ -9,5 +9,6 @@ class GetPokemonListUseCase
 constructor(
     private val repository: PokemonRepository
 ) {
-    suspend operator fun invoke(context:Context) = repository.getPokemonList(context = context)
+    suspend operator fun invoke(context: Context, onFailure: (Boolean) -> Unit = {}) =
+        repository.getPokemonList(context = context, onFailure = onFailure)
 }

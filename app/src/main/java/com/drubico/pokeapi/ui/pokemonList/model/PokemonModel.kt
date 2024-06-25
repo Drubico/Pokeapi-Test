@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.model
+package com.drubico.pokeapi.ui.pokemonList.model
 
 data class PokemonModel(
     val id: Int = 0,

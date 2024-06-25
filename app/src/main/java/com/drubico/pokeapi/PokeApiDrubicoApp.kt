@@ -8,7 +8,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.drubico.pokeapi.utils.PokemonUpdateWorker
+import com.drubico.pokeapi.core.utils.notifications.PokemonUpdateWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

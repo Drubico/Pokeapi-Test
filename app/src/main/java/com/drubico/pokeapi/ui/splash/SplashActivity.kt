@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var progressBar: ProgressBar
-    private val  splashTime = 3000
+    private val splashTime = 3000
     private val interval = 100
 
 
