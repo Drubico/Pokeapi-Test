@@ -34,26 +34,33 @@ Utiliza la API de PokeAPI (https://pokeapi.co/) para obtener datos de Pokémon.
 
 # Capturas
 
-- Pantalla de inicio
+### Pantalla de inicio
   ![Pantalla de inicio](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura1.jpg)
-
-- Pantalla de inicio - Boton para cargar mas pokemon (al hacer scroll hasta abajo)
+---
+### Pantalla de inicio - Boton para cargar mas pokemon (al hacer scroll hasta abajo)
   ![ Boton para cargar mas pokemon ](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura2.jpg)
+---
 
-- Pantalla de inicio - Filtros
+### Pantalla de inicio - Filtros
   ![Filtros](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura3.jpg)
+---
 
-- Pantalla de inicio - Mensaje de guardado
+### Pantalla de inicio - Mensaje de guardado
   ![Mensaje de guardado](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura4.jpg)
+---
 
-- Notificacion - Notificacion de nuevos pokemon
+### Notificacion - Notificacion de nuevos pokemon
   ![Notificacion de nuevos pokemon](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura5.jpg)
+---
 
-- Pantalla de inicio - Cargando pokemon
+### Pantalla de inicio - Cargando pokemon
   ![Cargando pokemon](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura6.jpg)
+---
 
-- Pantalla de inicio - Error al actualizar pokemon (error al descargar)
+### Pantalla de inicio - Error al actualizar pokemon (error al descargar)
   ![Error al actualizar pokemon](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura7.jpg)
+---
 
-- Pantalla de inicio - Lista vacia
+### Pantalla de inicio - Lista vacia
   ![Lista vacia](https://github.com/Drubico/Pokeapi-Test/blob/master/img/captura8.jpg)
+---
