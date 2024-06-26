@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.drubico.pokeapi.R
+import com.drubico.pokeapi.data.local.PokemonTypesDB
 import com.drubico.pokeapi.data.local.PokemonTypesDB.pokemonTypeList
 import com.drubico.pokeapi.ui.dialog.ToastType
 import com.drubico.pokeapi.ui.dialog.toastMessageCustom
@@ -37,9 +38,14 @@ class PokemonListFragment : Fragment() {
     private lateinit var buttonGetMorePokemon: Button
     private lateinit var linearLayoutTypes: LinearLayout
     private lateinit var filters: HorizontalScrollView
+    private lateinit var appliedFiltersScroll: HorizontalScrollView
+    private lateinit var linearLayoutAppliedFilters: LinearLayout
     private lateinit var failImage: ImageView
     private lateinit var failText: TextView
     private lateinit var tvNetworkError: TextView
+    private var currentFilter: PokemonTypesDB.PokemonTypeEntity = pokemonTypeList[0]
+    private var appliedFilters: MutableList<String> = mutableListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +63,8 @@ class PokemonListFragment : Fragment() {
         buttonGetMorePokemon = view.findViewById(R.id.btn_more_pokemon)
         linearLayoutTypes = view.findViewById(R.id.linearLayoutTypes)
         filters = view.findViewById(R.id.filters)
+        appliedFiltersScroll = view.findViewById(R.id.appliedFiltersScroll)
+        linearLayoutAppliedFilters = view.findViewById(R.id.linearLayoutAppliedFilters)
         failImage = view.findViewById(R.id.fail_img)
         failText = view.findViewById(R.id.fail_text)
         tvNetworkError = view.findViewById(R.id.tv_error_network)
@@ -77,13 +85,14 @@ class PokemonListFragment : Fragment() {
         filterPokemonType()
         rvAddOnScrollListener()
 
-        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList -> // Lista para recyclerView
+        viewModel.pokemonList.observe(viewLifecycleOwner) { pokemonList ->
             if (!pokemonList.isNullOrEmpty()) {
                 adapter.updatePokemonList(pokemonList)
+                filterPokemonList(currentFilter.name)
             }
         }
 
-        viewModel.isListEmpty.observe(viewLifecycleOwner) { isEmpty -> // vemos si la lista está vacía
+        viewModel.isListEmpty.observe(viewLifecycleOwner) { isEmpty ->
             if (isEmpty) {
                 failImage.visibility = View.VISIBLE
                 failText.visibility = View.VISIBLE
@@ -93,7 +102,7 @@ class PokemonListFragment : Fragment() {
             }
         }
 
-        viewModel.isNetworkError.observe(viewLifecycleOwner) { isNetworkError -> // vemos si hubo un error de red
+        viewModel.isNetworkError.observe(viewLifecycleOwner) { isNetworkError ->
             if (isNetworkError) {
                 tvNetworkError.visibility = View.VISIBLE
                 toastMessageCustom("Hubo un error de red, intentelo de nuevo.", ToastType.ERROR)
@@ -107,9 +116,9 @@ class PokemonListFragment : Fragment() {
                 failImage.visibility = View.GONE
                 failText.visibility = View.GONE
             }
-
         }
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> // vemos si está cargando
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
                 loadingAnimationLottie.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
@@ -122,7 +131,7 @@ class PokemonListFragment : Fragment() {
             }
         }
 
-        viewModel.newItemsCount.observe(viewLifecycleOwner) { newItemsCount -> // vemos si se agregaron nuevos pokemons
+        viewModel.newItemsCount.observe(viewLifecycleOwner) { newItemsCount ->
             if (newItemsCount > 0) {
                 loadingAnimationLottie.visibility = View.GONE
                 failImage.visibility = View.GONE
@@ -138,6 +147,7 @@ class PokemonListFragment : Fragment() {
 
     private fun filterPokemonList(query: String) {
         adapter.filter.filter(query)
+        updateAppliedFilters()
     }
 
     private fun rvAddOnScrollListener() {
@@ -161,8 +171,7 @@ class PokemonListFragment : Fragment() {
         })
     }
 
-
-    private fun filterPokemonType(){
+    private fun filterPokemonType() {
         pokemonTypeList.forEach { type ->
             val button = Button(requireContext())
             button.layoutParams = LinearLayout.LayoutParams(
@@ -179,10 +188,56 @@ class PokemonListFragment : Fragment() {
             button.setBackgroundColor(Color.parseColor(type.color))
             button.setTextColor(Color.WHITE)
             button.setOnClickListener {
+                currentFilter = type
                 filterPokemonList(type.name)
             }
             linearLayoutTypes.addView(button)
         }
     }
 
+    private fun updateAppliedFilters() {
+        linearLayoutAppliedFilters.removeAllViews()
+        if (currentFilter!=pokemonTypeList[0]) {
+            appliedFiltersScroll.visibility = View.VISIBLE
+            val filterButton = Button(requireContext())
+            filterButton.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                weight = 1f
+                marginStart = 10
+                marginEnd = 10
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            filterButton.setPadding(10, 10, 10, 10)
+            filterButton.text = currentFilter.nameDisplay
+            filterButton.setBackgroundColor(Color.parseColor(currentFilter.color))
+            filterButton.setTextColor(Color.WHITE)
+            filterButton.setOnClickListener {
+            }
+            linearLayoutAppliedFilters.addView(filterButton)
+
+            val clearButton = Button(requireContext())
+            clearButton.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                weight = 1f
+                marginStart = 10
+                marginEnd = 10
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            clearButton.setPadding(10, 10, 10, 10)
+            clearButton.text = "Limpiar Filtros"
+            clearButton.setBackgroundColor(Color.RED)
+            clearButton.setTextColor(Color.WHITE)
+            clearButton.setOnClickListener {
+                currentFilter = pokemonTypeList[0]
+                filterPokemonList("")
+            }
+            linearLayoutAppliedFilters.addView(clearButton)
+        } else {
+            appliedFiltersScroll.visibility = View.GONE
+        }
+    }
 }

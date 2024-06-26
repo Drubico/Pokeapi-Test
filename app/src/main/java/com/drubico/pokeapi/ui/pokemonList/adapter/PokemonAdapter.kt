@@ -10,8 +10,8 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.core.utils.ImageUtils.displayImageFromPath
-import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
 import com.drubico.pokeapi.ui.pokemonList.PokemonListViewModel
+import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
 
 class PokemonAdapter(
     private var pokemonList: MutableList<PokemonModel>,
@@ -41,7 +41,7 @@ class PokemonAdapter(
     }
 
     fun isListFiltered(): Boolean {
-        return filteredPokemonList != pokemonList
+        return filteredPokemonList.size != pokemonList.size
     }
 
     fun updatePokemonList(newPokemonList: List<PokemonModel>) {
@@ -68,7 +68,7 @@ class PokemonAdapter(
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charString = constraint?.toString() ?: ""
                 filteredPokemonList =
-                    if (charString.isEmpty() || charString.equals("clear", ignoreCase = true)) {
+                    if (charString.isEmpty()) {
                         pokemonList.toMutableList()
                     } else {
                         val filterPattern = charString.lowercase().trim()
