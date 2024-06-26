@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_dark"
     tools:context=".MainActivity">
-
     <TextView
         android:id="@+id/tv_error_network"
         android:layout_width="match_parent"
@@ -21,32 +20,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/fail_img"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
-        android:contentDescription="fail"
-        android:src="@drawable/psyduck"
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/fail_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:contentPadding="16dp"
         android:visibility="gone"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:strokeColor="@color/card_border"
+        app:strokeWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.5">
 
-    <TextView
-        android:id="@+id/fail_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No se encontraron pokemon"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fail_img">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
 
-    </TextView>
+            <ImageView
+                android:id="@+id/fail_img"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:contentDescription="fail"
+                android:src="@drawable/psyduck" />
+
+            <TextView
+                android:id="@+id/fail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No se encontraron pokemon"
+                android:textColor="@color/notificationErrorColor"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 
     <com.airbnb.lottie.LottieAnimationView
@@ -68,34 +83,34 @@
         android:id="@+id/filters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_error_network">
 
-        <LinearLayout
-            android:id="@+id/linearLayoutTypes"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupTypes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp" />
+            android:padding="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true" />
     </HorizontalScrollView>
     <HorizontalScrollView
         android:id="@+id/appliedFiltersScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filters"
         app:layout_constraintBottom_toTopOf="@id/rv_listPokemon">
 
-        <LinearLayout
-            android:id="@+id/linearLayoutAppliedFilters"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupAppliedFilters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

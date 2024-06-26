@@ -12,6 +12,6 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemons: List<PokemonEntity>)
 
-    @Query("SELECT * FROM PokemonEntity")
+    @Query("SELECT * FROM pokemon")
     fun getAllPokemons(): Flow<List<PokemonEntity>>
 }

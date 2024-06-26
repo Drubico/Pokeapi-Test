@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.core.utils.ImageUtils.displayImageFromPath
@@ -29,11 +31,26 @@ class PokemonAdapter(
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = filteredPokemonList[position]
-        holder.cardPokemon.backgroundTintList =
-            ColorStateList.valueOf(Color.parseColor(pokemon.color))
         holder.pokemonNameTextView.text = pokemon.name
         holder.pokemonNumberTextView.text = "#${pokemon.id}"
         displayImageFromPath(holder.pokemonImageView, pokemon.image)
+        holder.typesContainer.removeAllViews()
+        for (type in pokemon.types) {
+            val typeTextView = TextView(holder.itemView.context).apply {
+                text = type.nameDisplay
+                setTextColor(Color.WHITE)
+                setPadding(16, 8, 16, 8)
+                backgroundTintList = ColorStateList.valueOf(Color.parseColor(type.color))
+                setBackgroundResource(R.drawable.type_background)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(4, 0, 4, 0)
+                }
+            }
+            holder.typesContainer.addView(typeTextView)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -66,16 +83,16 @@ class PokemonAdapter(
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charString = constraint?.toString() ?: ""
-                filteredPokemonList =
-                    if (charString.isEmpty()) {
-                        pokemonList.toMutableList()
-                    } else {
-                        val filterPattern = charString.lowercase().trim()
-                        pokemonList.filter {
-                            it.type.contains(filterPattern, true)
-                        }.toMutableList()
-                    }
+                filteredPokemonList = if (constraint.isNullOrEmpty()) {
+                    pokemonList.toMutableList()
+                } else {
+                    val filterStrings = constraint.toString().split(",")
+                    pokemonList.filter { pokemon ->
+                        pokemon.types.any { type ->
+                            filterStrings.any { filter -> type.name.equals(filter, true) }
+                        }
+                    }.toMutableList()
+                }
                 val filterResults = FilterResults()
                 filterResults.values = filteredPokemonList
                 return filterResults
@@ -84,7 +101,7 @@ class PokemonAdapter(
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 filteredPokemonList = results?.values as MutableList<PokemonModel>
                 viewModel.updateListEmptyState(filteredPokemonList.isEmpty())
-                notifyDataSetChanged() // notifyDataSetChanged is acceptable here as it's difficult to determine the exact changes in a filtered list
+                notifyDataSetChanged()
             }
         }
     }
