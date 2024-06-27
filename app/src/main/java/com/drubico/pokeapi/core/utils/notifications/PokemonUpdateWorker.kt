@@ -1,9 +1,11 @@
 package com.drubico.pokeapi.core.utils.notifications
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequestBuilder
@@ -68,11 +70,19 @@ class PokemonUpdateWorker @AssistedInject constructor(
         WorkManager.getInstance(applicationContext).enqueue(nextWorkRequest)
     }
 
-    @SuppressLint("MissingPermission")
     private fun showNotification(title: String, message: String) {
         val notificationId = 1
         val channelId = "pokemon_update_channel"
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+        }
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)

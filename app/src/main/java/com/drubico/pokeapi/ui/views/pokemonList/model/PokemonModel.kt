@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.pokemonList.model
+package com.drubico.pokeapi.ui.views.pokemonList.model
 
 import com.drubico.pokeapi.data.local.PokemonTypesDB
 import com.drubico.pokeapi.data.network.getpokemon.StatSlot

@@ -1,18 +1,21 @@
-package com.drubico.pokeapi.ui.pokemonList
+package com.drubico.pokeapi.ui.views.pokemonList
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.HorizontalScrollView
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,7 +26,7 @@ import com.drubico.pokeapi.data.local.PokemonTypesDB
 import com.drubico.pokeapi.data.local.PokemonTypesDB.pokemonTypeList
 import com.drubico.pokeapi.ui.dialog.ToastType
 import com.drubico.pokeapi.ui.dialog.toastMessageCustom
-import com.drubico.pokeapi.ui.pokemonList.adapter.PokemonAdapter
+import com.drubico.pokeapi.ui.views.pokemonList.adapter.PokemonAdapter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -48,6 +51,16 @@ class PokemonListFragment : Fragment() {
     private lateinit var chipGroupTypes: ChipGroup
     private lateinit var chipGroupAppliedFilters: ChipGroup
     private val appliedFilters = mutableListOf<PokemonTypesDB.PokemonTypeEntity>()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(requireContext(), "Permiso concedido", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Permiso denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +91,7 @@ class PokemonListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        requestPermission()
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         adapter = PokemonAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = adapter
@@ -120,13 +133,13 @@ class PokemonListFragment : Fragment() {
                 recyclerView.visibility = View.GONE
                 filters.visibility = View.GONE
                 buttonGetMorePokemon.visibility = View.GONE
-                chipGroupTypes.visibility= View.GONE
+                chipGroupTypes.visibility = View.GONE
                 chipGroupAppliedFilters.visibility = View.GONE
             } else {
                 loadingAnimationLottie.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
                 filters.visibility = View.VISIBLE
-                chipGroupTypes.visibility= View.VISIBLE
+                chipGroupTypes.visibility = View.VISIBLE
                 chipGroupAppliedFilters.visibility = View.VISIBLE
             }
         }
@@ -141,7 +154,19 @@ class PokemonListFragment : Fragment() {
                 )
             }
         }
+    }
 
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     private fun filterPokemonList() {
@@ -207,6 +232,4 @@ class PokemonListFragment : Fragment() {
         chipGroupAppliedFilters.addView(filterChip)
         appliedFiltersScroll.visibility = View.VISIBLE
     }
-
-
 }

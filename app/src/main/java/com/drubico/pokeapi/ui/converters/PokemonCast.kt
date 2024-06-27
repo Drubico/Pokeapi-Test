@@ -4,7 +4,7 @@ import com.drubico.pokeapi.data.local.PokemonTypesDB
 import com.drubico.pokeapi.data.local.PokemonTypesDB.pokemonTypeList
 import com.drubico.pokeapi.data.local.entities.PokemonEntity
 import com.drubico.pokeapi.data.network.getpokemon.TypeSlot
-import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
+import com.drubico.pokeapi.ui.views.pokemonList.model.PokemonModel
 
 object PokemonCast {
 

@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.pokemonList.adapter
+package com.drubico.pokeapi.ui.views.pokemonList.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.drubico.pokeapi.R
 import com.drubico.pokeapi.core.utils.ImageUtils.displayImageFromPath
-import com.drubico.pokeapi.ui.pokemonList.PokemonListViewModel
-import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
+import com.drubico.pokeapi.ui.views.pokemonList.PokemonListViewModel
+import com.drubico.pokeapi.ui.views.pokemonList.model.PokemonModel
 
 class PokemonAdapter(
     private var pokemonList: MutableList<PokemonModel>,
@@ -70,7 +70,6 @@ class PokemonAdapter(
 
         filteredPokemonList.clear()
         filteredPokemonList.addAll(newPokemonList)
-
         if (newSize > oldSize) {
             notifyItemRangeInserted(oldSize, newSize - oldSize)
         } else if (newSize < oldSize) {

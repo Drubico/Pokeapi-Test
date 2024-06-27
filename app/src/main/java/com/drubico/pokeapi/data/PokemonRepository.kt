@@ -13,7 +13,7 @@ import com.drubico.pokeapi.data.network.getPokemonList.GetPokemonListService
 import com.drubico.pokeapi.data.network.getpokemon.GetPokemonService
 import com.drubico.pokeapi.data.network.getpokemon.PokemonDetailsResponse
 import com.drubico.pokeapi.ui.converters.PokemonCast.castToModel
-import com.drubico.pokeapi.ui.pokemonList.model.PokemonModel
+import com.drubico.pokeapi.ui.views.pokemonList.model.PokemonModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

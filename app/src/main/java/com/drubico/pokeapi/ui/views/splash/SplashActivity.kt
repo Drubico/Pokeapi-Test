@@ -1,4 +1,4 @@
-package com.drubico.pokeapi.ui.splash
+package com.drubico.pokeapi.ui.views.splash
 
 import android.content.Intent
 import android.os.Bundle
