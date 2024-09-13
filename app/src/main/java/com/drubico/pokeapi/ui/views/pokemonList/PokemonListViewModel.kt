@@ -31,6 +31,9 @@ class PokemonListViewModel
     private val _isNetworkError = MutableLiveData<Boolean>()
     val isNetworkError: LiveData<Boolean> get() = _isNetworkError
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
+
     private var previousPokemonList: List<PokemonModel> = emptyList()
 
     private val _newItemsCount = MutableLiveData<Int>()
@@ -51,6 +54,9 @@ class PokemonListViewModel
                     context
                 ) { isFailure ->
                     _isNetworkError.postValue(isFailure)
+                    if (isFailure) {
+                        _errorMessage.postValue("Hubo un error de red, intentelo de nuevo.")
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

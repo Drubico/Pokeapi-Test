@@ -1,145 +1,156 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_dark"
-    tools:context=".MainActivity">
-    <TextView
-        android:id="@+id/tv_error_network"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.drubico.pokeapi.ui.views.pokemonList.PokemonListViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:padding="8dp"
-        android:textSize="16sp"
-        android:text="Se produjo un error al intentar obtener mas pokemon"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@color/background_dark"
+        tools:context=".MainActivity">
 
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/fail_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:contentPadding="16dp"
-        android:visibility="gone"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/card_background"
-        app:strokeColor="@color/card_border"
-        app:strokeWidth="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5">
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_error_network"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:text="@{viewModel.errorMessage}"
+            android:textColor="@android:color/white"
+            android:visibility="@{viewModel.isNetworkError ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/fail_img"
-                android:layout_width="240dp"
-                android:layout_height="240dp"
-                android:contentDescription="fail"
-                android:src="@drawable/psyduck" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fail_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:contentPadding="16dp"
+            android:visibility="@{viewModel.isListEmpty ? View.VISIBLE : View.GONE}"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:strokeColor="@color/card_border"
+            app:strokeWidth="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
 
-            <TextView
-                android:id="@+id/fail_text"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/fail_img"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:contentDescription="fail"
+                    android:src="@drawable/psyduck" />
+
+                <TextView
+                    android:id="@+id/fail_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No se encontraron pokemon"
+                    android:textColor="@color/notificationErrorColor"
+                    android:textSize="20sp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_animation"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
+            app:flow_firstHorizontalBias="0.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/pikachu_animation" />
+
+        <HorizontalScrollView
+            android:id="@+id/filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_error_network">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTypes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No se encontraron pokemon"
-                android:textColor="@color/notificationErrorColor"
-                android:textSize="20sp"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:singleSelection="true"
+                app:selectionRequired="true" />
+        </HorizontalScrollView>
 
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loading_animation"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
-        android:visibility="visible"
-        app:flow_firstHorizontalBias="0.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/pikachu_animation" />
-
-    <HorizontalScrollView
-        android:id="@+id/filters"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_error_network">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupTypes"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:id="@+id/appliedFiltersScroll"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:singleSelection="true"
-            app:selectionRequired="true" />
-    </HorizontalScrollView>
-    <HorizontalScrollView
-        android:id="@+id/appliedFiltersScroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filters"
-        app:layout_constraintBottom_toTopOf="@id/rv_listPokemon">
+            android:background="@color/colorPrimary"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filters"
+            app:layout_constraintBottom_toTopOf="@id/rv_listPokemon">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupAppliedFilters"
-            android:layout_width="wrap_content"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupAppliedFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp" />
+        </HorizontalScrollView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_listPokemon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@+id/btn_more_pokemon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appliedFiltersScroll"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_pokemon" />
+
+        <Button
+            android:id="@+id/btn_more_pokemon"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp" />
-    </HorizontalScrollView>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_listPokemon"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/btn_more_pokemon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appliedFiltersScroll"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_pokemon" />
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:text="@string/charger_more"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            android:layout_margin="16dp"
+            android:onClick="@{() -> viewModel.getPokemons(context)}"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-
-    <Button
-        android:id="@+id/btn_more_pokemon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="16sp"
-        android:text="@string/charger_more"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
